@@ -1,4 +1,4 @@
-import { BackgroundForm } from "@/components/background-form";
+import { InterestsForm } from "@/components/interests-form";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function ExperiencePage() {
+export default function InterestsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -39,19 +39,19 @@ export default function ExperiencePage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-3xl font-headline">
-                  Step 3: Add Your Experience & Interests
+                  Step 4: Share Your Interests
                 </CardTitle>
                 <CardDescription className="font-body space-y-4 pt-2">
                   <p>
-                    Finally, tell us about your practical experience and what you're passionate about.
+                    Finally, tell us about what you're passionate about. This helps us find careers that you'll not only be good at, but also enjoy.
                   </p>
                   <p>
-                    Describe any projects you've worked on and list your personal or professional interests. This final piece of information will allow our AI to generate the most accurate career suggestions for you.
+                    List your personal or professional interests. This final piece of information will allow our AI to generate the most accurate career suggestions for you.
                   </p>
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <BackgroundForm />
+                <InterestsForm />
               </CardContent>
             </Card>
           </div>

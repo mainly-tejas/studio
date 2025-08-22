@@ -22,13 +22,12 @@ import { useToast } from "@/hooks/use-toast";
 import type { UserBackground } from "@/lib/types";
 
 const formSchema = z.object({
-  projects: z.string().min(10, "Please describe at least one project."),
   interests: z.string().min(5, "Please list at least one interest."),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function BackgroundForm() {
+export function InterestsForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -46,7 +45,6 @@ export function BackgroundForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projects: background?.projects || "",
       interests: background?.interests || "",
     },
   });
@@ -54,7 +52,6 @@ export function BackgroundForm() {
   useEffect(() => {
     if (background) {
       form.reset({
-        projects: background.projects || "",
         interests: background.interests || "",
       });
     }
@@ -110,27 +107,6 @@ export function BackgroundForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="projects"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-lg font-headline">Projects</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Describe any personal, academic, or professional projects you've worked on."
-                  className="resize-y"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                What have you built? This helps us understand your practical
-                experience.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="interests"
           render={({ field }) => (
             <FormItem>
@@ -149,7 +125,7 @@ export function BackgroundForm() {
           )}
         />
         <div className="flex justify-between">
-           <Button variant="outline" onClick={() => router.back()}>
+           <Button variant="outline" type="button" onClick={() => router.back()}>
             Back
           </Button>
           <Button type="submit" disabled={loading} size="lg">

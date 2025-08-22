@@ -104,7 +104,7 @@ export function SkillsForm() {
         interests: background?.interests || '',
     };
     localStorage.setItem("userBackground", JSON.stringify(updatedBackground));
-    router.push("/start/experience");
+    router.push("/start/projects");
   }
 
   if (loading) {
@@ -182,7 +182,7 @@ export function SkillsForm() {
           </Button>
           <Button type="submit" disabled={submitting} size="lg">
             {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Next: Experience & Interests
+            Next: Add Projects
           </Button>
         </div>
       </form>
