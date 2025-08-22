@@ -41,20 +41,25 @@ export default function StartPage() {
                 <CardTitle className="text-3xl font-headline">
                   Tell Us About Yourself
                 </CardTitle>
-                <CardDescription className="font-body space-y-2">
+                <CardDescription className="font-body space-y-4 pt-2">
                   <p>
-                    Your responses will help our AI craft a personalized career
-                    path just for you. The more details you provide, the better
-                    the recommendations.
+                    Your journey begins here. By providing details about your
+                    background, you empower our AI to map out a career path
+                    uniquely tailored to you.
                   </p>
                   <p>
-                    Start by entering your educational background, skills,
-                    projects, and interests. Based on your input, our AI will
-                    generate a personalized career identity statement and a
-                    visual exploration map of potential career paths. You'll
-                    even be able to dive deeper into any suggestion to see
-                    details like common skills, salary expectations, and growth
-                    outlook.
+                    First, enter your educational background. Based on this, our
+                    AI will predict and suggest relevant skills, which you can
+                    then review and select. Next, add your practical experience
+                    and personal interests.
+                  </p>
+                  <p>
+                    Once your profile is complete, our AI models will generate a
+                    personalized career identity statement and a visual
+                    exploration map of potential career paths—some you may have
+                    never considered. You can then dive deeper into any
+                    suggestion to see details like common skills, salary
+                    expectations, and growth outlook.
                   </p>
                 </CardDescription>
               </CardHeader>
