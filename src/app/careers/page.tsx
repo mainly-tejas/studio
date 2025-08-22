@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -20,8 +21,12 @@ import {
   DollarSign,
   Loader2,
   TrendingUp,
+  Building,
+  MapPin,
+  ExternalLink,
 } from "lucide-react";
 import type { CareerSuggestionOutput } from "@/ai/flows/career-suggestion";
+import { Separator } from "@/components/ui/separator";
 
 type CareerSuggestion = CareerSuggestionOutput[0];
 
@@ -117,7 +122,9 @@ export default function CareersPage() {
                         {suggestion.career}
                       </CardTitle>
                       <Badge
-                        variant={suggestion.fitScore > 80 ? "default" : "secondary"}
+                        variant={
+                          suggestion.fitScore > 80 ? "default" : "secondary"
+                        }
                         className="bg-primary/20 text-primary font-bold"
                       >
                         <BarChart className="mr-2 h-4 w-4" />
@@ -155,11 +162,11 @@ export default function CareersPage() {
                           Salary Range (INR)
                         </h4>
                         <p className="text-sm text-muted-foreground font-body">
-                          {suggestion.salaryRange}
+                          ₹{suggestion.salaryRange}
                         </p>
                       </div>
                     </div>
-                     <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3">
                       <TrendingUp className="h-5 w-5 mt-1 text-accent" />
                       <div>
                         <h4 className="font-semibold font-headline">
@@ -170,6 +177,41 @@ export default function CareersPage() {
                         </p>
                       </div>
                     </div>
+
+                    {suggestion.jobListings &&
+                      suggestion.jobListings.length > 0 && (
+                        <div className="pt-2">
+                          <Separator className="mb-4"/>
+                           <h4 className="font-semibold font-headline mb-4">
+                            Live Job Listings
+                          </h4>
+                          <div className="space-y-4">
+                            {suggestion.jobListings.map((job, jobIndex) => (
+                              <Card key={jobIndex} className="bg-secondary/50">
+                                <CardContent className="p-4 space-y-2">
+                                  <div className="font-semibold">{job.title}</div>
+                                  <div className="flex items-center text-sm text-muted-foreground gap-4">
+                                      <div className="flex items-center gap-1.5">
+                                         <Building className="h-3.5 w-3.5"/>
+                                         {job.company}
+                                      </div>
+                                       <div className="flex items-center gap-1.5">
+                                         <MapPin className="h-3.5 w-3.5"/>
+                                         {job.location}
+                                      </div>
+                                  </div>
+                                  <Button variant="link" size="sm" asChild className="p-0 h-auto">
+                                    <a href={job.url} target="_blank" rel="noopener noreferrer">
+                                        View Job
+                                        <ExternalLink className="ml-1.5 h-3.5 w-3.5"/>
+                                    </a>
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                   </CardContent>
                   <CardFooter>
                     <Button
