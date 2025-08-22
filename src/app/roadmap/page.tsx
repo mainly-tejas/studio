@@ -17,141 +17,100 @@ import {
   Loader2,
   ArrowLeft,
   ClipboardCheck,
+  CalendarDays,
 } from "lucide-react";
 import type { CareerSuggestionOutput } from "@/ai/flows/career-suggestion";
 import { ChatAssistant } from "@/components/chat-assistant";
 import { AdaptiveQuiz } from "@/components/adaptive-quiz";
+import { generateRoadmap, GenerateRoadmapOutput } from "@/ai/flows/roadmap-generation";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type CareerSuggestion = CareerSuggestionOutput[0];
-
-const placeholderRoadmap = {
-  phases: [
-    {
-      title: "Phase 1: Foundations (Months 1-3)",
-      modules: [
-        {
-          title: "Module 1: Core Programming",
-          tasks: [
-            "Learn Python syntax",
-            "Data structures and algorithms",
-            "Object-oriented programming",
-          ],
-          resources: ["freeCodeCamp Python Course", "LeetCode Easy Problems"],
-          checkpoint: "Build a command-line application",
-        },
-        {
-          title: "Module 2: Web Basics",
-          tasks: ["HTML, CSS, and JavaScript", "DOM manipulation", "Intro to APIs"],
-          resources: ["MDN Web Docs", "The Odin Project"],
-          checkpoint: "Create a personal portfolio website",
-        },
-      ],
-    },
-    {
-      title: "Phase 2: Specialization (Months 4-8)",
-      modules: [
-        {
-          title: "Module 3: Backend Development",
-          tasks: [
-            "Learn a backend framework (e.g., Django, Node.js)",
-            "Database management (SQL/NoSQL)",
-            "REST API design",
-          ],
-          resources: ["Django Official Tutorial", "Full Stack Open"],
-          checkpoint: "Build a REST API for a simple blog",
-        },
-        {
-          title: "Module 4: Frontend Framework",
-          tasks: [
-            "Learn React or Vue",
-            "State management",
-            "Component-based architecture",
-          ],
-          resources: ["Official React Docs", "Scrimba React Course"],
-          checkpoint: "Rebuild portfolio with a frontend framework",
-        },
-      ],
-    },
-    {
-      title: "Phase 3: Advanced Topics & Job Prep (Months 9-12)",
-      modules: [
-        {
-          title: "Module 5: Project & Portfolio",
-          tasks: [
-            "Build a full-stack MERN/Djang-React application",
-            "Deploy the application",
-            "Write comprehensive tests",
-          ],
-          resources: [
-            "Vercel/Netlify for deployment",
-            "Jest/Pytest for testing",
-          ],
-          checkpoint: "A deployed, live full-stack project",
-        },
-        {
-          title: "Module 6: Career Prep",
-          tasks: [
-            "Resume building",
-            "LinkedIn optimization",
-            "Behavioral and technical interview prep",
-          ],
-          resources: ["Pramp for mock interviews", "Tech interview handbook"],
-          checkpoint: "Completed 10 mock interviews",
-        },
-      ],
-    },
-  ],
-};
 
 export default function RoadmapPage() {
   const [career, setCareer] = useState<CareerSuggestion | null>(null);
   const [background, setBackground] = useState<any>(null);
-  const [roadmap, setRoadmap] = useState<any>(placeholderRoadmap);
+  const [roadmap, setRoadmap] = useState<GenerateRoadmapOutput | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      const storedCareer = localStorage.getItem("selectedCareer");
-      const storedBackground = localStorage.getItem("userBackground");
-      if (storedCareer && storedBackground) {
-        setCareer(JSON.parse(storedCareer));
-        setBackground(JSON.parse(storedBackground));
-      } else {
-        router.push("/start");
-      }
-    } catch (error) {
-      console.error(error);
+    const storedCareer = localStorage.getItem("selectedCareer");
+    const storedBackground = localStorage.getItem("userBackground");
+
+    if (storedCareer && storedBackground) {
+      const parsedCareer = JSON.parse(storedCareer);
+      const parsedBackground = JSON.parse(storedBackground);
+      setCareer(parsedCareer);
+      setBackground(parsedBackground);
+
+      generateRoadmap({
+        career: parsedCareer.career,
+        background: JSON.stringify(parsedBackground, null, 2),
+      })
+        .then((generatedRoadmap) => {
+          setRoadmap(generatedRoadmap);
+        })
+        .catch((err) => {
+          console.error("Failed to generate roadmap:", err);
+          setError("Could not generate a personalized roadmap. Please try again.");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
       router.push("/start");
-    } finally {
-      setLoading(false);
     }
   }, [router]);
 
   const handleRoadmapUpdate = (newRoadmapString: string) => {
     try {
+      // Attempt to parse it as a structured roadmap first
       const newRoadmap = JSON.parse(newRoadmapString);
-      setRoadmap(newRoadmap);
+      if (Array.isArray(newRoadmap.phases)) {
+        setRoadmap(newRoadmap);
+      } else {
+        // If it's not structured, display it as raw text
+        setRoadmap({ raw: newRoadmapString, phases: [] });
+      }
     } catch (e) {
-      setRoadmap({ raw: newRoadmapString });
+      // If parsing fails, it's likely a raw string response
+      setRoadmap({ raw: newRoadmapString, phases: [] });
     }
   };
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex flex-col min-h-screen items-center justify-center bg-background gap-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="text-muted-foreground font-headline">Crafting your personalized roadmap...</p>
       </div>
     );
   }
 
-  if (!career || !background) {
-    return null;
+  if (error) {
+    return (
+       <div className="flex flex-col min-h-screen items-center justify-center bg-background gap-4">
+        <p className="text-destructive">{error}</p>
+        <Button asChild>
+            <Link href="/careers">Go Back</Link>
+        </Button>
+      </div>
+    )
   }
 
+  if (!career || !background || !roadmap) {
+    return null;
+  }
+  
   const roadmapString = JSON.stringify(roadmap, null, 2);
-
-  const hasPhases = roadmap && Array.isArray(roadmap.phases);
+  const hasPhases = roadmap && Array.isArray(roadmap.phases) && roadmap.phases.length > 0;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -177,7 +136,7 @@ export default function RoadmapPage() {
       <main className="flex-1 container py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
           {hasPhases ? (
-            roadmap.phases.map((phase: any, phaseIndex: number) => (
+            roadmap.phases.map((phase, phaseIndex) => (
               <div key={phaseIndex} className="relative pl-8 sm:pl-12 py-6 group">
                 <div className="absolute top-0 left-4 sm:left-6 w-px h-full bg-border group-last:h-[calc(100%-4rem)]"></div>
                 <div className="absolute top-5 left-[-0.1rem] sm:left-[0.35rem] w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
@@ -186,65 +145,60 @@ export default function RoadmapPage() {
                 <h2 className="font-bold text-2xl mb-4 font-headline">
                   {phase.title}
                 </h2>
-                <div className="space-y-6">
-                  {phase.modules.map((module: any, moduleIndex: number) => (
-                    <Card
-                      key={moduleIndex}
-                      className="ml-4 sm:ml-6 transition-shadow hover:shadow-md"
-                    >
-                      <CardHeader>
-                        <CardTitle className="font-headline">
-                          {module.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div>
-                          <h4 className="font-semibold mb-2 flex items-center gap-2">
-                            <Briefcase className="w-4 h-4 text-accent" />
-                            Daily Tasks
-                          </h4>
-                          <ul className="list-none space-y-1 pl-4">
-                            {module.tasks.map((task: string, i: number) => (
-                              <li
-                                key={i}
-                                className="flex items-center gap-2 text-muted-foreground"
-                              >
-                                <Circle className="w-2 h-2 fill-current" />
-                                {task}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2 flex items-center gap-2">
-                            <BookOpen className="w-4 h-4 text-accent" />
-                            Curated Resources
-                          </h4>
-                          <ul className="list-none space-y-1 pl-4">
-                            {module.resources.map((res: string, i: number) => (
-                              <li
-                                key={i}
-                                className="flex items-center gap-2 text-muted-foreground"
-                              >
-                                <Circle className="w-2 h-2 fill-current" />
-                                {res}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2 flex items-center gap-2">
-                            <ClipboardCheck className="w-4 h-4 text-accent" />
-                            Measurable Checkpoint
-                          </h4>
-                          <p className="pl-4 text-muted-foreground">
-                            {module.checkpoint}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                <Accordion type="single" collapsible className="w-full space-y-6">
+                   {phase.modules.map((module, moduleIndex) => (
+                      <Card key={moduleIndex} className="ml-4 sm:ml-6">
+                        <AccordionItem value={`item-${moduleIndex}`} className="border-b-0">
+                          <AccordionTrigger className="p-6 hover:no-underline">
+                              <CardTitle className="font-headline text-xl text-left">
+                                {module.title}
+                              </CardTitle>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-4">
+                              <div>
+                                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                  <CalendarDays className="w-4 h-4 text-accent" />
+                                  Weekly Goals / Daily Tasks
+                                </h4>
+                                <ul className="list-none space-y-1 pl-6">
+                                  {module.tasks.map((task, i) => (
+                                    <li key={i} className="flex items-start gap-2 text-muted-foreground">
+                                      <Circle className="w-2 h-2 fill-current mt-1.5 shrink-0" />
+                                      <span>{task}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                  <BookOpen className="w-4 h-4 text-accent" />
+                                  Curated Resources
+                                </h4>
+                                 <ul className="list-none space-y-1 pl-6">
+                                  {module.resources.map((res, i) => (
+                                    <li key={i} className="flex items-start gap-2 text-muted-foreground">
+                                      <Circle className="w-2 h-2 fill-current mt-1.5 shrink-0" />
+                                      <span>{res}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div>
+                                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                  <ClipboardCheck className="w-4 h-4 text-accent" />
+                                  Measurable Checkpoint
+                                </h4>
+                                <p className="pl-6 text-muted-foreground">
+                                  {module.checkpoint}
+                                </p>
+                              </div>
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Card>
+                   ))}
+                </Accordion>
               </div>
             ))
           ) : (
@@ -254,7 +208,7 @@ export default function RoadmapPage() {
               </CardHeader>
               <CardContent>
                 <pre className="whitespace-pre-wrap font-code text-sm">
-                  {roadmap.raw || roadmapString}
+                  {roadmap.raw || "No roadmap details available."}
                 </pre>
               </CardContent>
             </Card>
