@@ -26,7 +26,8 @@ const CareerSuggestionOutputSchema = z.array(z.object({
   fitScore: z.number().describe('A score indicating how well the career matches the student\'s profile (0-100).'),
   skillGaps: z.string().describe('A description of the skills the student needs to develop to pursue this career.'),
   starterRoles: z.string().describe('Entry-level roles for this career path.'),
-  salaryRange: z.string().describe('The typical salary range for this career path.'),
+  salaryRange: z.string().describe('The typical salary range for this career path in Indian Rupees (INR).'),
+  futureOutlook: z.string().describe('A brief description of the future outlook for this career path.'),
 }));
 
 export type CareerSuggestionOutput = z.infer<typeof CareerSuggestionOutputSchema>;
@@ -41,7 +42,7 @@ const careerSuggestionPrompt = ai.definePrompt({
   output: {schema: CareerSuggestionOutputSchema},
   prompt: `You are a career counselor providing personalized career suggestions to students.
 
-  Based on the student's background, skills, projects, and interests, suggest potential career paths that align with their profile.  Provide a fit score (0-100), skill gaps, starter roles, and salary ranges for each suggestion.
+  Based on the student's background, skills, projects, and interests, suggest potential career paths that align with their profile. Provide a fit score (0-100), skill gaps, starter roles, salary ranges in INR, and a future outlook for each suggestion.
 
   Education: {{{education}}}
   Skills: {{{skills}}}

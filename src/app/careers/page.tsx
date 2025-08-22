@@ -19,6 +19,7 @@ import {
   Briefcase,
   DollarSign,
   Loader2,
+  TrendingUp,
 } from "lucide-react";
 import type { CareerSuggestionOutput } from "@/ai/flows/career-suggestion";
 
@@ -151,10 +152,21 @@ export default function CareersPage() {
                       <DollarSign className="h-5 w-5 mt-1 text-accent" />
                       <div>
                         <h4 className="font-semibold font-headline">
-                          Salary Range
+                          Salary Range (INR)
                         </h4>
                         <p className="text-sm text-muted-foreground font-body">
                           {suggestion.salaryRange}
+                        </p>
+                      </div>
+                    </div>
+                     <div className="flex items-start gap-3">
+                      <TrendingUp className="h-5 w-5 mt-1 text-accent" />
+                      <div>
+                        <h4 className="font-semibold font-headline">
+                          Future Outlook
+                        </h4>
+                        <p className="text-sm text-muted-foreground font-body">
+                          {suggestion.futureOutlook}
                         </p>
                       </div>
                     </div>
