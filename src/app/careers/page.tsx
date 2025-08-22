@@ -24,6 +24,9 @@ import {
   Building,
   MapPin,
   ExternalLink,
+  Target,
+  Clock,
+  Rocket,
 } from "lucide-react";
 import type { CareerSuggestionOutput } from "@/ai/flows/career-suggestion";
 import { Separator } from "@/components/ui/separator";
@@ -134,6 +137,17 @@ export default function CareersPage() {
                   </CardHeader>
                   <CardContent className="flex-grow space-y-4">
                     <div className="flex items-start gap-3">
+                      <Target className="h-5 w-5 mt-1 text-accent" />
+                      <div>
+                        <h4 className="font-semibold font-headline">
+                          Why it's a good fit
+                        </h4>
+                        <p className="text-sm text-muted-foreground font-body">
+                          {suggestion.why}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
                       <Lightbulb className="h-5 w-5 mt-1 text-accent" />
                       <div>
                         <h4 className="font-semibold font-headline">
@@ -174,6 +188,28 @@ export default function CareersPage() {
                         </h4>
                         <p className="text-sm text-muted-foreground font-body">
                           {suggestion.futureOutlook}
+                        </p>
+                      </div>
+                    </div>
+                     <div className="flex items-start gap-3">
+                      <Clock className="h-5 w-5 mt-1 text-accent" />
+                      <div>
+                        <h4 className="font-semibold font-headline">
+                          Work-Life Balance
+                        </h4>
+                        <p className="text-sm text-muted-foreground font-body">
+                          {suggestion.workLifeBalance}/10
+                        </p>
+                      </div>
+                    </div>
+                     <div className="flex items-start gap-3">
+                      <Rocket className="h-5 w-5 mt-1 text-accent" />
+                      <div>
+                        <h4 className="font-semibold font-headline">
+                          5-Year Trajectory
+                        </h4>
+                        <p className="text-sm text-muted-foreground font-body">
+                          {suggestion.fiveYearTrajectory}
                         </p>
                       </div>
                     </div>

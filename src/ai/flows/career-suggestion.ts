@@ -70,10 +70,13 @@ export type CareerSuggestionInput = z.infer<typeof CareerSuggestionInputSchema>;
 const CareerSuggestionOutputSchema = z.array(z.object({
   career: z.string().describe('The suggested career path.'),
   fitScore: z.number().describe('A score indicating how well the career matches the student\'s profile (0-100).'),
+  why: z.string().describe("A brief explanation of why this career is a good fit for the student's profile."),
   skillGaps: z.string().describe('A description of the skills the student needs to develop to pursue this career.'),
   starterRoles: z.string().describe('Entry-level roles for this career path.'),
   salaryRange: z.string().describe('The typical salary range for this career path in Indian Rupees (INR).'),
   futureOutlook: z.string().describe('A brief description of the future outlook for this career path.'),
+  workLifeBalance: z.number().min(1).max(10).describe('A score from 1 (poor) to 10 (excellent) representing the typical work-life balance in this field.'),
+  fiveYearTrajectory: z.string().describe("A description of a likely career trajectory over the next 5 years, starting from an entry-level role."),
   jobListings: z.array(JobListingSchema).optional().describe('A list of relevant live job listings.'),
 }));
 
@@ -88,18 +91,29 @@ const careerSuggestionPrompt = ai.definePrompt({
   input: {schema: CareerSuggestionInputSchema},
   output: {schema: CareerSuggestionOutputSchema},
   tools: [getJobListings],
-  prompt: `You are a career counselor providing personalized career suggestions to students.
+  prompt: `You are an expert career counselor providing insightful, personalized career suggestions to students in India.
 
-  Based on the student's background, skills, projects, and interests, suggest potential career paths that align with their profile. Provide a fit score (0-100), skill gaps, starter roles, salary ranges in INR, and a future outlook for each suggestion.
+  Based on the student's background, skills, projects, and interests, suggest three potential career paths that align with their profile.
 
-  For each suggested career, use the getJobListings tool to find a few relevant, live job openings. Include these in your response.
+  For each suggestion, you MUST provide the following details:
+  - career: The name of the career path.
+  - fitScore: A score from 0-100 indicating how well the career matches the student's profile.
+  - why: A concise, encouraging explanation of *why* this career is a good fit, referencing their specific background and interests.
+  - skillGaps: A description of the key skills the student should focus on developing.
+  - starterRoles: A few examples of entry-level job titles for this career path.
+  - salaryRange: The typical starting salary range for this career path in Indian Rupees (INR). Format it as "X,XX,XXX - Y,YY,YYY".
+  - futureOutlook: A brief, optimistic description of the future outlook for this career path in India.
+  - workLifeBalance: A score from 1 (poor) to 10 (excellent) representing the typical work-life balance.
+  - fiveYearTrajectory: A brief outline of a possible 5-year career progression.
+  - jobListings: Use the getJobListings tool to find a few relevant, live job openings. Include these in your response.
 
-  Education: {{{education}}}
-  Skills: {{{skills}}}
-  Projects: {{{projects}}}
-  Interests: {{{interests}}}
+  Student Profile:
+  - Education: {{{education}}}
+  - Skills: {{{skills}}}
+  - Projects: {{{projects}}}
+  - Interests: {{{interests}}}
 
-  Format the output as a JSON array of career suggestions.
+  Format the output as a JSON array of three career suggestions.
   `,
 });
 
