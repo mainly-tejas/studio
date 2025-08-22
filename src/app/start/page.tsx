@@ -41,10 +41,21 @@ export default function StartPage() {
                 <CardTitle className="text-3xl font-headline">
                   Tell Us About Yourself
                 </CardTitle>
-                <CardDescription className="font-body">
-                  Your responses will help our AI craft a personalized career
-                  path just for you. The more details you provide, the better
-                  the recommendations.
+                <CardDescription className="font-body space-y-2">
+                  <p>
+                    Your responses will help our AI craft a personalized career
+                    path just for you. The more details you provide, the better
+                    the recommendations.
+                  </p>
+                  <p>
+                    Start by entering your educational background, skills,
+                    projects, and interests. Based on your input, our AI will
+                    generate a personalized career identity statement and a
+                    visual exploration map of potential career paths. You'll
+                    even be able to dive deeper into any suggestion to see
+                    details like common skills, salary expectations, and growth
+                    outlook.
+                  </p>
                 </CardDescription>
               </CardHeader>
               <CardContent>
