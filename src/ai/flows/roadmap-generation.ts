@@ -49,7 +49,7 @@ const roadmapGenerationPrompt = ai.definePrompt({
   output: { schema: GenerateRoadmapOutputSchema },
   prompt: `You are a world-class AI career consultant. Your task is to create a highly personalized, structured, and actionable career roadmap for a student.
 
-  The roadmap should be broken down into logical phases (e.g., Foundations, Specialization, Advanced Topics). Each phase should have a title and a suggested timeframe.
+  The roadmap should be broken down into logical phases. Each phase should have a title that includes a suggested timeframe (e.g., "Phase 1: Foundations (Months 1-3)").
   
   Within each phase, create several modules. Each module must have:
   - A clear, concise title.
