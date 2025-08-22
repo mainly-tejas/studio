@@ -1,4 +1,4 @@
-import { EducationForm } from "@/components/education-form";
+import { SkillsForm } from "@/components/skills-form";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function StartPage() {
+export default function SkillsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -18,7 +18,7 @@ export default function StartPage() {
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
-              viewBox="0 0 24 24"
+              viewBox="0 0 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -39,22 +39,22 @@ export default function StartPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-3xl font-headline">
-                  Step 1: Tell Us About Your Education
+                  Step 2: Curate Your Skills
                 </CardTitle>
                 <CardDescription className="font-body space-y-4 pt-2">
                   <p>
-                    Your journey begins here. By providing details about your
-                    background, you empower our AI to map out a career path
-                    uniquely tailored to you.
+                    Based on your educational background, our AI has predicted a
+                    list of relevant skills. Review the suggestions below.
                   </p>
                   <p>
-                    First, enter your educational background. Based on this, our
-                    AI will predict and suggest relevant skills for you to review in the next step.
+                    You can select the skills that best represent your abilities,
+                    and add any others that we might have missed. This will help
+                    us find the perfect career matches for you.
                   </p>
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <EducationForm />
+                <SkillsForm />
               </CardContent>
             </Card>
           </div>

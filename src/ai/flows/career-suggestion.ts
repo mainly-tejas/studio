@@ -16,7 +16,7 @@ const CareerSuggestionInputSchema = z.object({
   education: z.string().describe('The student\'s educational background.'),
   skills: z.string().describe('A comma-separated list of the student\'s skills.'),
   projects: z.string().describe('A description of the student\'s projects.'),
-  interests: z.string().describe('The student\'s interests.'),
+  interests: z.string().describe('A description of the student\'s interests.'),
 });
 
 export type CareerSuggestionInput = z.infer<typeof CareerSuggestionInputSchema>;
