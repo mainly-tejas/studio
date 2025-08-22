@@ -151,6 +151,8 @@ export default function RoadmapPage() {
 
   const roadmapString = JSON.stringify(roadmap, null, 2);
 
+  const hasPhases = roadmap && Array.isArray(roadmap.phases);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -174,18 +176,7 @@ export default function RoadmapPage() {
 
       <main className="flex-1 container py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
-          {roadmap.raw ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Updated Roadmap</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <pre className="whitespace-pre-wrap font-code text-sm">
-                  {roadmap.raw}
-                </pre>
-              </CardContent>
-            </Card>
-          ) : (
+          {hasPhases ? (
             roadmap.phases.map((phase: any, phaseIndex: number) => (
               <div key={phaseIndex} className="relative pl-8 sm:pl-12 py-6 group">
                 <div className="absolute top-0 left-4 sm:left-6 w-px h-full bg-border group-last:h-[calc(100%-4rem)]"></div>
@@ -256,6 +247,17 @@ export default function RoadmapPage() {
                 </div>
               </div>
             ))
+          ) : (
+             <Card>
+              <CardHeader>
+                <CardTitle>Updated Roadmap</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <pre className="whitespace-pre-wrap font-code text-sm">
+                  {roadmap.raw || roadmapString}
+                </pre>
+              </CardContent>
+            </Card>
           )}
         </div>
       </main>
