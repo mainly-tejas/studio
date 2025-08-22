@@ -64,8 +64,6 @@ export function SkillsForm() {
     try {
       const result = await skillSuggestion({ education });
       setSuggestedSkills(result.skills);
-      // Automatically select all suggested skills initially
-      form.setValue("skills", result.skills);
     } catch (error) {
       console.error(error);
       toast({
