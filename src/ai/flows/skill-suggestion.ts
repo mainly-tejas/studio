@@ -9,7 +9,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const SkillSuggestionInputSchema = z.object({
   education: z.string().describe("The student's educational background."),
@@ -32,7 +32,7 @@ const skillSuggestionPrompt = ai.definePrompt({
   name: 'skillSuggestionPrompt',
   input: { schema: SkillSuggestionInputSchema },
   output: { schema: SkillSuggestionOutputSchema },
-  prompt: `You are an expert career advisor. Based on the provided educational background, predict a list of relevant technical and soft skills. Provide a list of around 10-15 skills.
+  prompt: `You are an expert career advisor. Based on the provided educational background, predict a list of relevant technical and soft skills. Provide a comprehensive list of at least 30 skills.
 
   Education: {{{education}}}
 
